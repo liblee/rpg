@@ -1,0 +1,28 @@
+{
+    "infos": [
+        {
+            "id": 101,
+            "name": "sword",
+            "type": 0,
+            "luck": 20,
+            "demage": 10,
+            "money": 100
+        },
+        {
+            "id": 102,
+            "name": "shield",
+            "type": 1,
+            "luck": 100,
+            "life": 100,
+            "money": 80
+        },
+        {
+            "id": 103,
+            "type": 6,
+            "name": "Health potion",
+            "money": 10,
+            "luck": 10,
+            "life": 10
+        }
+    ]
+}
