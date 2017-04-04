@@ -1,10 +1,11 @@
 package item
+
 //package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-"encoding/json"
 )
 
 type ItemInfo struct {
@@ -26,19 +27,20 @@ type Item struct {
 }
 
 func (c *Item) ShowInfo() {
-	for _, i := range c.Infos{
+	for _, i := range c.Infos {
 		info := fmt.Sprintf("Name:%s|Demage:%d|Value:%d|State:%s\n",
-		i.Name, i.Demage, i.Money, i.Status)
+			i.Name, i.Demage, i.Money, i.Status)
 		fmt.Printf(info)
 	}
 }
 
-func (c *Item) GetItem(id int)ItemInfo{
-	for _, info :=range c.Infos{
+func (c *Item) GetItem(id int) *ItemInfo {
+	for i, info := range c.Infos {
 		if id == info.Id {
-			return info
+			return &c.Infos[i]
 		}
 	}
+	return nil
 }
 
 func (c *Item) LoadFromFile(filepath string) {
@@ -59,8 +61,9 @@ func NewItem() *Item {
 	return c
 }
 
-func main(){
+var ItemMgr *Item = NewItem()
+
+func main() {
 	it := NewItem()
 	it.ShowInfo()
 }
-

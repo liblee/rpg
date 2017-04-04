@@ -1,9 +1,11 @@
 package main
 
 import (
-	. "fmt"
 	"./hero"
+	. "./item"
+	. "./level"
 	"./monster"
+	. "fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -41,8 +43,8 @@ func heroReapTerasures(h *hero.Hero, m *monster.Monster) {
 	Printf("%s has %d items\n", m.Name, total)
 	r := randInt(100)
 	for _, it := range m.Items {
-		if r <= it.Info.Luck {
-			h.ReapItem(&it)
+		if r <= ItemMgr.GetItem(it).Luck {
+			h.ReapItem(it)
 			return
 		}
 	}
@@ -76,16 +78,15 @@ func battle(h *hero.Hero, m *monster.Monster) {
 	}
 }
 
-func gamelogic(h *hero.Hero) {
+func gamelogic(h *hero.Hero, l *Level) {
 	for {
 		Printf("input your command:\n")
 		var cmd string
 		Scanln(&cmd)
 		switch cmd {
 		case "f":
-			m := monster.NewMonster()
-			m.LoadFromFile("monster.json")
-			battle(h, m)
+			m := l.GetOneMonster()
+			battle(h, &m)
 		case "show":
 			h.ShowStatus()
 			h.ShowEquipItems()
@@ -119,6 +120,8 @@ func gamelogic(h *hero.Hero) {
 func main() {
 	h := hero.NewHero()
 	h.ShowAllItems()
-	gamelogic(h)
+	l := NewLevel()
+	l.LoadLevel("level.json")
+	gamelogic(h, l)
 	h.ShowAllItems()
 }

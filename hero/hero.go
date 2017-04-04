@@ -1,18 +1,20 @@
 package hero
 
+//package main
+
 import (
+	. "../item"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	. "../item"
 )
 
 type Equipment struct {
-	Weapon   Item `json:"weapon"`
-	Armor    Item `json:"armor"`
-	Shoulder Item `json:"shoulder"`
-	Pants    Item `json:"pants"`
-	Shoes    Item `json:"shoes"`
+	Weapon   int `json:"weapon"`
+	Armor    int `json:"armor"`
+	Shoulder int `json:"shoulder"`
+	Pants    int `json:"pants"`
+	Shoes    int `json:"shoes"`
 }
 
 type Hero struct {
@@ -31,12 +33,12 @@ type Hero struct {
 	CurExp     int       `json:"curexp"`
 	Money      int       `json:"money"`
 	Eqpmt      Equipment `json:"equipment"`
-	Items      []Item    `json:"items"`
+	Items      []int     `json:"items"`
 }
 
 func (h *Hero) ReBuild() {
-	h.Demage = h.BaseDemage + h.Eqpmt.Weapon.Info.Demage
-	h.TotalLife = h.BaseLife + h.Eqpmt.Armor.Info.Life
+	h.Demage = h.BaseDemage + ItemMgr.GetItem(h.Eqpmt.Weapon).Demage
+	h.TotalLife = h.BaseLife + ItemMgr.GetItem(h.Eqpmt.Armor).Life
 }
 
 func (h *Hero) EquipItem(id int) {
@@ -44,35 +46,34 @@ func (h *Hero) EquipItem(id int) {
 	if i < 0 || i >= len(h.Items) {
 		return
 	}
-	h.Items[i].Info.Status = "equiped"
+	ItemMgr.GetItem(h.Items[i]).Status = "equiped"
 	c := h.Items[i]
 	h.Items = append(h.Items[:i], h.Items[i+1:]...)
-	switch c.Info.Type {
+	switch ItemMgr.GetItem(c).Type {
 	case 0:
-		h.Eqpmt.Weapon.Info.Status = "not used"
+		ItemMgr.GetItem(h.Eqpmt.Weapon).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Weapon)
 		h.Eqpmt.Weapon = c
 	case 1:
-		h.Eqpmt.Armor.Info.Status = "not used"
+		ItemMgr.GetItem(h.Eqpmt.Armor).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Armor)
 		h.Eqpmt.Armor = c
 	case 2:
-		h.Eqpmt.Shoulder.Info.Status = "not used"
+		ItemMgr.GetItem(h.Eqpmt.Shoulder).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Shoulder)
 		h.Eqpmt.Shoulder = c
 	case 3:
-		h.Eqpmt.Pants.Info.Status = "not used"
+		ItemMgr.GetItem(h.Eqpmt.Pants).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Pants)
 		h.Eqpmt.Pants = c
 	case 4:
-		h.Eqpmt.Shoes.Info.Status = "not used"
+		ItemMgr.GetItem(h.Eqpmt.Shoes).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Shoes)
 		h.Eqpmt.Shoes = c
 	default:
-		fmt.Printf("Equipment type error:%d.\n", c.Info.Type)
+		fmt.Printf("Equipment type error:%d.\n", ItemMgr.GetItem(c).Type)
 	}
 	h.ReBuild()
-
 }
 
 func (h *Hero) SellItem(id int) {
@@ -80,10 +81,10 @@ func (h *Hero) SellItem(id int) {
 	if i < 0 || i >= len(h.Items) {
 		return
 	}
-	c := h.Items[i]
+	c := ItemMgr.GetItem(h.Items[i])
 	h.Items = append(h.Items[:i], h.Items[i+1:]...)
-	h.Money = h.Money + c.Info.Money
-	fmt.Printf("Sell %s change for %d $.\n", c.Info.Name, c.Info.Money)
+	h.Money = h.Money + c.Money
+	fmt.Printf("Sell %s change for %d $.\n", c.Name, c.Money)
 }
 
 func (h *Hero) UseItem(id int) {
@@ -91,30 +92,31 @@ func (h *Hero) UseItem(id int) {
 	if i < 0 || i >= len(h.Items) {
 		return
 	}
-	c := h.Items[i]
-	if c.Info.Type != 6 {
-		fmt.Printf("%s can not be used.\n", c.Info.Name)
+	c := ItemMgr.GetItem(h.Items[i])
+	if c.Type != 6 {
+		fmt.Printf("%s can not be used.\n", c.Name)
 		return
 	}
 	h.Items = append(h.Items[:i], h.Items[i+1:]...)
-	h.CurLife = h.CurLife + c.Info.Life
+	h.CurLife = h.CurLife + c.Life
 	if h.CurLife > h.TotalLife {
 		h.CurLife = h.TotalLife
 	}
 	fmt.Printf("Use %s heal %d hp, current life:%d.\n",
-		c.Info.Name, c.Info.Life, h.CurLife)
+		c.Name, c.Life, h.CurLife)
 	return
 }
 
 func (h *Hero) ShowEquipItems() {
 	fmt.Printf("Weapon:%10s\nArmor:%10s\nShoulder:%10s\nPants:%10s\nShoes:%10s\n",
-		h.Eqpmt.Weapon.Info.Name, h.Eqpmt.Armor.Info.Name, h.Eqpmt.Shoulder.Info.Name,
-		h.Eqpmt.Pants.Info.Name, h.Eqpmt.Shoes.Info.Name)
+		ItemMgr.GetItem(h.Eqpmt.Weapon).Name, ItemMgr.GetItem(h.Eqpmt.Armor).Name, ItemMgr.GetItem(h.Eqpmt.Shoulder).Name,
+		ItemMgr.GetItem(h.Eqpmt.Pants).Name, ItemMgr.GetItem(h.Eqpmt.Shoes).Name)
+
 }
 
 func (h *Hero) ShowAllItems() {
 	for i, c := range h.Items {
-		fmt.Printf("Id:%d,%s", i, c.ShowInfo())
+		fmt.Printf("Id:%d,%+v\n", i, ItemMgr.GetItem(c))
 	}
 }
 
@@ -123,9 +125,9 @@ func (h *Hero) ShowStatus() {
 		h.Name, h.TotalLife, h.CurLife, h.Demage, h.Mana, h.Level, h.Money)
 }
 
-func (h *Hero) ReapItem(it *Item) {
-	h.Items = append(h.Items, *it)
-	fmt.Printf("%s reap %s.\n", h.Name, it.Info.Name)
+func (h *Hero) ReapItem(it int) {
+	h.Items = append(h.Items, it)
+	fmt.Printf("%s reap %s.\n", h.Name, ItemMgr.GetItem(it).Name)
 }
 
 func (cl *Hero) LoadFromFile(filepath string) {
@@ -158,7 +160,7 @@ func (h *Hero) SaveToFile(filepath string) {
 
 func NewHero() *Hero {
 	c := new(Hero)
-	c.Items = make([]Item, 30)
+	c.Items = make([]int, 30)
 	c.LoadFromFile("hero.json")
 	c.ReBuild()
 	return c
@@ -166,6 +168,6 @@ func NewHero() *Hero {
 
 func main() {
 	c := NewHero()
-	c.LoadFromFile("tmp.log")
+	c.LoadFromFile("hero.json")
 	c.ShowAllItems()
 }

@@ -1,8 +1,8 @@
 {
-    "name":"level1",
-    "path":
-[
-    "monster.json",
-    "goblin.json"
-]
+		"name":"level1",
+		"path":
+		[
+				"monster.json",
+				"goblin.json"
+		]
 }

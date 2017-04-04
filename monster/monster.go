@@ -1,11 +1,12 @@
-//package monster
-package main
+package monster
+
+//package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-//	. "../item"
+	//	. "../item"
 )
 
 type Monster struct {
@@ -18,11 +19,11 @@ type Monster struct {
 	Intval    int    `json:"Intval"`
 	Mana      int    `json:"mana"`
 	Money     int    `json:"money"`
-	ItemIds   []int   `json:"items"`
+	Items     []int  `json:"items"`
 }
 
 func (h *Monster) ShowAllItems() {
-	for _, c := range h.ItemIds {
+	for _, c := range h.Items {
 		fmt.Printf("%v\n", c)
 	}
 }
@@ -41,7 +42,7 @@ func (cl *Monster) LoadFromFile(filepath string) {
 
 func NewMonster() *Monster {
 	c := new(Monster)
-	c.ItemIds = make([]int, 30)
+	c.Items = make([]int, 30)
 	return c
 }
 

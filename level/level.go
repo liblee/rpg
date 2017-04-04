@@ -1,10 +1,10 @@
-package main
+package level
 
 import (
+	. "../monster"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	. "lihui.org/net_test/rpg/monster"
 	"math/rand"
 	"time"
 )
@@ -12,7 +12,7 @@ import (
 type Level struct {
 	Name     string   `json:"name"`
 	Paths    []string `json:"path"`
-	Monsters []*Monster
+	Monsters []Monster
 }
 
 func (l *Level) LoadLevel(path string) {
@@ -30,15 +30,13 @@ func (l *Level) LoadLevel(path string) {
 		fmt.Printf("list:%s\n", s)
 		m := NewMonster()
 		m.LoadFromFile(s)
-		l.Monsters = append(l.Monsters, m)
+		l.Monsters = append(l.Monsters, *m)
 	}
 }
 
 func (l *Level) ShowMonsters() {
 	for _, m := range l.Monsters {
-		if m != nil {
-			fmt.Printf("level:%s|monster:%s.\n", l.Name, m.Name)
-		}
+		fmt.Printf("level:%s|monster:%s.\n", l.Name, m.Name)
 	}
 }
 
@@ -47,11 +45,7 @@ func randInt(n int) int {
 	return r.Intn(n)
 }
 
-func (l *Level) GetOneMonster() *Monster {
-	if len(l.Monsters) == 0 {
-		return nil
-	}
-
+func (l *Level) GetOneMonster() Monster {
 	r := randInt(len(l.Monsters))
 	m := l.Monsters[r]
 	fmt.Printf("Monster:%s\n", m.Name)
@@ -60,7 +54,7 @@ func (l *Level) GetOneMonster() *Monster {
 
 func NewLevel() *Level {
 	l := new(Level)
-	l.Monsters = make([]*Monster, 0)
+	l.Monsters = make([]Monster, 0)
 	return l
 }
 
@@ -69,5 +63,4 @@ func main() {
 	l.LoadLevel("../level.json")
 	l.ShowMonsters()
 	l.GetOneMonster()
-
 }
