@@ -7,7 +7,10 @@ import (
 	"./monster"
 	. "fmt"
 	"math/rand"
+	"os"
+	"os/signal"
 	"strconv"
+	sc "syscall"
 	"time"
 )
 
@@ -86,7 +89,7 @@ func gamelogic(h *hero.Hero, l *Level) {
 		switch cmd {
 		case "f":
 			m := l.GetOneMonster()
-			battle(h, &m)
+			go battle(h, &m)
 		case "show":
 			h.ShowStatus()
 			h.ShowEquipItems()
@@ -117,11 +120,22 @@ func gamelogic(h *hero.Hero, l *Level) {
 	}
 }
 
+func signalHandler() {
+	listener := make(chan os.Signal)
+	signal.Notify(listener, sc.SIGINT, sc.SIGABRT, sc.SIGKILL, sc.SIGTERM)
+	caught := <-listener
+	Printf("\nCaught a signal:%v\n", caught)
+	h.SaveToFile("hero.json")
+	os.Exit(0)
+}
+
+var h = hero.NewHero()
+
 func main() {
-	h := hero.NewHero()
 	h.ShowAllItems()
 	l := NewLevel()
 	l.LoadLevel("level.json")
+	go signalHandler()
 	gamelogic(h, l)
 	h.ShowAllItems()
 }

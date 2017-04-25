@@ -1,0 +1,16 @@
+{
+    "infos": [
+        {
+            "id": 101,
+            "name": "割裂",
+            "type": 0,
+            "luck": 20,
+            "demage": 100,
+            "last":5,
+            "last_demage": 10,
+            "status":0,
+            "cool_down":4,
+            "details":"使目标流血持续5秒"
+        }
+    ]
+}

@@ -4,9 +4,11 @@ package hero
 
 import (
 	. "../item"
+	//	. "../skill"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"time"
 )
 
 type Equipment struct {
@@ -34,12 +36,21 @@ type Hero struct {
 	Money      int       `json:"money"`
 	Eqpmt      Equipment `json:"equipment"`
 	Items      []int     `json:"items"`
+	Skills     []int     `json:"skills"`
 }
 
 func (h *Hero) ReBuild() {
 	h.Demage = h.BaseDemage + ItemMgr.GetItem(h.Eqpmt.Weapon).Demage
 	h.TotalLife = h.BaseLife + ItemMgr.GetItem(h.Eqpmt.Armor).Life
 }
+
+const (
+	WEAPON = iota
+	ARMOR
+	SHOULDER
+	PANTS
+	SHOES
+)
 
 func (h *Hero) EquipItem(id int) {
 	i := id
@@ -50,23 +61,23 @@ func (h *Hero) EquipItem(id int) {
 	c := h.Items[i]
 	h.Items = append(h.Items[:i], h.Items[i+1:]...)
 	switch ItemMgr.GetItem(c).Type {
-	case 0:
+	case WEAPON:
 		ItemMgr.GetItem(h.Eqpmt.Weapon).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Weapon)
 		h.Eqpmt.Weapon = c
-	case 1:
+	case ARMOR:
 		ItemMgr.GetItem(h.Eqpmt.Armor).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Armor)
 		h.Eqpmt.Armor = c
-	case 2:
+	case SHOULDER:
 		ItemMgr.GetItem(h.Eqpmt.Shoulder).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Shoulder)
 		h.Eqpmt.Shoulder = c
-	case 3:
+	case PANTS:
 		ItemMgr.GetItem(h.Eqpmt.Pants).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Pants)
 		h.Eqpmt.Pants = c
-	case 4:
+	case SHOES:
 		ItemMgr.GetItem(h.Eqpmt.Shoes).Status = "not used"
 		h.Items = append(h.Items, h.Eqpmt.Shoes)
 		h.Eqpmt.Shoes = c
@@ -158,11 +169,28 @@ func (h *Hero) SaveToFile(filepath string) {
 
 }
 
+func (h *Hero) run() {
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			h.CurLife = h.CurLife + 10
+			if h.CurLife > h.TotalLife {
+				h.CurLife = h.TotalLife
+			}
+			println("5s timer")
+
+		case <-time.After(time.Second * 10):
+			println("10s timer")
+		}
+	}
+}
+
 func NewHero() *Hero {
 	c := new(Hero)
 	c.Items = make([]int, 30)
 	c.LoadFromFile("hero.json")
 	c.ReBuild()
+	go c.run()
 	return c
 }
 
