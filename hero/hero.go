@@ -177,10 +177,10 @@ func (h *Hero) run() {
 			if h.CurLife > h.TotalLife {
 				h.CurLife = h.TotalLife
 			}
-			println("5s timer")
+			//println("5s timer")
 
 		case <-time.After(time.Second * 10):
-			println("10s timer")
+			//println("10s timer")
 		}
 	}
 }
