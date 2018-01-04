@@ -1,0 +1,13 @@
+{
+    "name": "哥布林",
+    "totallife": 1000,
+    "curlife": 1000,
+    "demage": 200,
+    "mana": 800,
+    "level": 10,
+    "nextexp": 1000,
+    "curexp": 878,
+    "money": 888,
+    "items": [101, 102]
+}
+

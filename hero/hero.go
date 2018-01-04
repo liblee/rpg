@@ -185,17 +185,17 @@ func (h *Hero) run() {
 	}
 }
 
-func NewHero() *Hero {
+func NewHero(f string) *Hero {
 	c := new(Hero)
 	c.Items = make([]int, 30)
-	c.LoadFromFile("hero.json")
+	c.LoadFromFile(f)
 	c.ReBuild()
 	go c.run()
 	return c
 }
 
 func main() {
-	c := NewHero()
-	c.LoadFromFile("hero.json")
+	c := NewHero("../data/hero.json")
+	c.LoadFromFile("../data/hero.json")
 	c.ShowAllItems()
 }

@@ -48,6 +48,6 @@ func NewMonster() *Monster {
 
 func main() {
 	c := NewMonster()
-	c.LoadFromFile("monster.json")
+	c.LoadFromFile("../data/monster.json")
 	c.ShowAllItems()
 }

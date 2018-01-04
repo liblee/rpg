@@ -1,0 +1,8 @@
+{
+		"name":"level1",
+		"path":
+		[
+				"data/monster.json",
+				"data/goblin.json"
+		]
+}

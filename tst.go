@@ -64,7 +64,7 @@ func battle(h *hero.Hero, m *monster.Monster) {
 		if m.CurLife <= 0 {
 			Printf("%s is dead\n", m.Name)
 			heroReapTerasures(h, m)
-			h.SaveToFile("hero.json")
+			h.SaveToFile("data/hero.json")
 			break
 		}
 		if b*1000 >= m.Intval {
@@ -99,19 +99,19 @@ func gamelogic(h *hero.Hero, l *Level) {
 			Scanln(&cmd)
 			id, _ := strconv.Atoi(cmd)
 			h.EquipItem(id)
-			h.SaveToFile("hero.json")
+			h.SaveToFile("data/hero.json")
 		case "sell":
 			Printf("Input Item id\n")
 			Scanln(&cmd)
 			id, _ := strconv.Atoi(cmd)
 			h.SellItem(id)
-			h.SaveToFile("hero.json")
+			h.SaveToFile("data/hero.json")
 		case "use":
 			Printf("Input Item id\n")
 			Scanln(&cmd)
 			id, _ := strconv.Atoi(cmd)
 			h.UseItem(id)
-			h.SaveToFile("hero.json")
+			h.SaveToFile("data/hero.json")
 		case "help":
 			fallthrough
 		default:
@@ -125,16 +125,16 @@ func signalHandler() {
 	signal.Notify(listener, sc.SIGINT, sc.SIGABRT, sc.SIGKILL, sc.SIGTERM)
 	caught := <-listener
 	Printf("\nCaught a signal:%v\n", caught)
-	h.SaveToFile("hero.json")
+	h.SaveToFile("data/hero.json")
 	os.Exit(0)
 }
 
-var h = hero.NewHero()
+var h = hero.NewHero("data/hero.json")
 
 func main() {
 	h.ShowAllItems()
 	l := NewLevel()
-	l.LoadLevel("level.json")
+	l.LoadLevel("data/level.json")
 	go signalHandler()
 	gamelogic(h, l)
 	h.ShowAllItems()

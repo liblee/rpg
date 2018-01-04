@@ -57,7 +57,7 @@ func (c *Item) LoadFromFile(filepath string) {
 
 func NewItem() *Item {
 	c := new(Item)
-	c.LoadFromFile("item.json")
+	c.LoadFromFile("data/item.json")
 	return c
 }
 
