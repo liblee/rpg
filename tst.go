@@ -115,7 +115,7 @@ func gamelogic(h *hero.Hero, l *Level) {
 		case "help":
 			fallthrough
 		default:
-			Println("support cmds:[fight,show,equip,sell,use,help]")
+			Println("support cmds:[fight/f,show,equip,sell,use,help]")
 		}
 	}
 }

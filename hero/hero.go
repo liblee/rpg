@@ -174,6 +174,7 @@ func (h *Hero) run() {
 		select {
 		case <-time.After(time.Second * 5):
 			h.CurLife = h.CurLife + 10
+			//fmt.Printf("hero[%s] restore %d life, current:%d.\n", h.Name, 10, h.CurLife)
 			if h.CurLife > h.TotalLife {
 				h.CurLife = h.TotalLife
 			}
